@@ -24,7 +24,7 @@ def create(request):
                       {'form': form})
 
     subscription = Subscription.objects.create(**form.cleaned_data)
-    subscription.pk_hash = hashlib.sha256(subscription.cpf.encode()).hexdigest()
+    subscription.pk_hash = hashlib.md5(subscription.email.encode()).hexdigest()
 
     subscription.save()
 

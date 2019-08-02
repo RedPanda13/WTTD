@@ -5,12 +5,12 @@ from eventex.subscriptions.models import Subscription
 
 class SubscriptionDetailGet(TestCase):
     def setUp(self):
-        cpf = '12345678901'
-        pk_hash = hashlib.sha256(cpf.encode()).hexdigest()
+        email = 'henrique@bastos.net'
+        pk_hash = hashlib.md5(email.encode()).hexdigest()
         self.obj = Subscription.objects.create(
             name='Henrique Bastos',
-            cpf=cpf,
-            email='henrique@bastos.net',
+            cpf=12345678901,
+            email=email,
             phone='21-996186180',
             pk_hash=pk_hash
         )

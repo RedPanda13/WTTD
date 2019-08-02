@@ -49,7 +49,7 @@ class SubscribePostValid(TestCase):
 
     def test_post(self):
         """Valid POST should redirect to /inscricao/1/"""
-        hash_object = hashlib.sha256(self.data['cpf'].encode())
+        hash_object = hashlib.md5(self.data['email'].encode())
         self.assertRedirects(self.resp, '/inscricao/{}/'.format(hash_object.hexdigest()))
 
     def test_send_subscribe_email(self):

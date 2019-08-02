@@ -27,7 +27,7 @@ def create(request):
     subscription.pk_hash = hashlib.sha256(subscription.cpf.encode()).hexdigest()
 
     subscription.save()
-    
+
     _send_email('Confirmação de inscrição',
                 settings.DEFAULT_FROM_EMAIL,
                 subscription.email,

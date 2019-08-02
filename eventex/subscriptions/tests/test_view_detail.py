@@ -1,17 +1,20 @@
+import hashlib
 from django.test import TestCase
-
 from eventex.subscriptions.models import Subscription
 
 
 class SubscriptionDetailGet(TestCase):
     def setUp(self):
+        cpf = '12345678901'
+        pk_hash = hashlib.sha256(cpf.encode()).hexdigest()
         self.obj = Subscription.objects.create(
             name='Henrique Bastos',
-            cpf='12345678901',
+            cpf=cpf,
             email='henrique@bastos.net',
-            phone='21-996186180'
+            phone='21-996186180',
+            pk_hash=pk_hash
         )
-        self.resp = self.client.get('/inscricao/{}/'.format(self.obj.pk))
+        self.resp = self.client.get('/inscricao/{}/'.format(self.obj.pk_hash))
 
     def test_get(self):
         self.assertEqual(200, self.resp.status_code)

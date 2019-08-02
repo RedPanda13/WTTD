@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from eventex.subscriptions.forms import SubscriptionForm
 from eventex.subscriptions.models import Subscription
+import hashlib
 
 
 def subscribe(request):
@@ -22,16 +23,18 @@ def create(request):
         return render(request, 'subscriptions/subscription_form.html',
                       {'form': form})
 
-    # Send subscription email
     subscription = Subscription.objects.create(**form.cleaned_data)
+    subscription.pk_hash = hashlib.sha256(subscription.cpf.encode()).hexdigest()
 
+    subscription.save()
+    
     _send_email('Confirmação de inscrição',
                 settings.DEFAULT_FROM_EMAIL,
                 subscription.email,
                 'subscriptions/subscription_email.txt',
                 {'subscription': subscription})
 
-    return HttpResponseRedirect('/inscricao/{}/'.format(subscription.pk))
+    return HttpResponseRedirect('/inscricao/{}/'.format(subscription.pk_hash))
 
 
 def new(request):
@@ -39,9 +42,9 @@ def new(request):
                   {'form': SubscriptionForm()})
 
 
-def detail(request, pk):
+def detail(request, pk_hash):
     try:
-        subscription = Subscription.objects.get(pk=pk)
+        subscription = Subscription.objects.get(pk_hash=pk_hash)
     except Subscription.DoesNotExist:
         raise Http404
 
